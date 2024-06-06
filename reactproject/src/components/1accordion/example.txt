@@ -1,0 +1,245 @@
+===== 
+example 1
+=====
+
+import { useState } from "react";
+import data from "./data";
+import "./style.css";
+export default function Accordion() {
+  const [selected, setSelected] = useState(null);
+
+  function handleSingleSelection(getcurrentId) {
+    setSelected(getcurrentId === selected ? null : getcurrentId);
+  }
+
+  return (
+    <div className="wrapper">
+      <div className="accordion">
+        {data && data.length > 0 ? (
+          data.map((dataItem) => (
+            <div className="item">
+              <div
+                onClick={() => handleSingleSelection(dataItem.id)}
+                className="title"
+              >
+                <h3>{dataItem.question}</h3>
+                <span>+</span>
+              </div>
+              <div>
+                {selected === dataItem.id ? (
+                  <div className="content">{dataItem.answer}</div>
+                ) : null}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div>No data found</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+=====
+multiple selection  
+=====
+
+import { useState } from "react";
+import data from "./data";
+import "./style.css";
+export default function Accordion() {
+  const [selected, setSelected] = useState(null);
+  const [enableMultiSelection, setEnabledMultiSelection] = useState(false);
+  const [multiple, setMultiple] = useState([]);
+
+  function handleSingleSelection(getcurrentId) {
+    setSelected(getcurrentId === selected ? null : getcurrentId);
+  }
+  function handleMultiSelection(getcurrentId) {
+    let cpyMultiple = [...multiple];
+    const findIndexOfCurrentId = cpyMultiple.indexOf(getcurrentId);
+
+    console.log(findIndexOfCurrentId);
+    if (findIndexOfCurrentId === -1) cpyMultiple.push(getcurrentId);
+    else cpyMultiple.splice(findIndexOfCurrentId, 1);
+
+    setMultiple(cpyMultiple);
+
+    console.log(selected, multiple);
+  }
+
+  return (
+    <div className="wrapper">
+      <button onClick={() => setEnabledMultiSelection(!enableMultiSelection)}>
+        Enable Multi Selection
+      </button>
+      <div className="accordion">
+        {data && data.length > 0 ? (
+          data.map((dataItem) => (
+            <div className="item">
+              <div
+                onClick={
+                  enableMultiSelection
+                    ? () => handleMultiSelection(dataItem.id)
+                    : () => handleSingleSelection(dataItem.id)
+                }
+                className="title"
+              >
+                <h3>{dataItem.question}</h3>
+                <span>+</span>
+              </div>
+              <div>
+                {enableMultiSelection
+                  ? multiple.indexOf(dataItem.id) !== -1 && (
+                      <div className="content">{dataItem.answer}</div>
+                    )
+                  : selected === dataItem.id && (
+                      <div className="content">{dataItem.answer}</div>
+                    )}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div>No data found</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+
+
+
+  === ANALYSIS  ===
+
+1.
+  <button onClick={() => setEnabledMultiSelection(!enableMultiSelection)}>
+  Enable Multi Selection
+  </button>
+
+used to toggle between true and false or two options 
+- setEnabledMultiSelection is an arrow function that 
+will be when button is clicked.
+
+2. 
+   function handleSingleSelection(getcurrentId) {
+    setSelected(getcurrentId === selected ? null : getcurrentId);
+  } 
+
+
+- uses ternary operator to determine the new value of (selected)  state 
+- It first check if getcurrentId is  === selected state 
+ternary operator is a consice way to perform a condition check 
+and return one of two value based on the result. 
+- getcurrentId === selected 
+This check if the id of the clicked accordion item(getcurrentId) is 
+same as the current selected item.(selected) 
+- valueifTrue: null 
+It means the user clicked on the already selecte item. null, is returned
+to deselect the item. 
+- valueifFalse: getcurrentId 
+if getcurrentId is not equal to selected,  it means the user clicked on a different 
+item. Therefore get current is returned to set this item as the selected one.
+
+3. 
+  function handleMultiSelection(getcurrentId) {
+    let cpyMultiple = [...multiple];
+    const findIndexOfCurrentId = cpyMultiple.indexOf(getcurrentId);
+
+    console.log(findIndexOfCurrentId);
+    if (findIndexOfCurrentId === -1) cpyMultiple.push(getcurrentId);
+    else cpyMultiple.splice(findIndexOfCurrentId, 1);
+
+    setMultiple(cpyMultiple);
+
+    console.log(selected, multiple);
+  }
+
+
+-  this is js standard function declaration  with a parameter 
+-  creates a copy of the current multiple state arrays using  
+the spread opeator (...)
+multiple stores IDs of all currently selected accordion items. 
+-   const findIndexOfCurrentId = cpyMultiple.indexOf(getcurrentId);
+This line finds the index of getcurrentId in the cpyMultiple array. 
+indexOf returns the index of the first occurrence of the specified value, 
+or -1 if value is not found. 
+-  if (findIndexOfCurrentId === -1) cpyMultiple.push(getcurrentId);
+else cpyMultiple.splice(findIndexOfCurrentId, 1);
+
+If getcurrentId is not found in cpyMultiple(-1): It means the item is not  
+currently selected. Therefore,  it is added to the array using push. 
+If getcurrentId is found in cpyMultiple: it means item is alredy selected, 
+Therefore,  it is removed from the array using splice.  
+-  setMultiple(cpyMultiple);
+setMultiple is updater function return by React usetate. for  multiple state. 
+The updated cpyMultiple array is passed to setMultiple which is 
+updates the state.  
+
+
+
+4. 
+  onClick={
+                  enableMultiSelection
+                    ? () => handleMultiSelection(dataItem.id)
+                    : () => handleSingleSelection(dataItem.id)
+                }
+
+
+- enableMultiSelection is a boolean state variable that determine whether the 
+multi-selection mode is enabled or not 
+- If enableMultiSelection is true , the onClick event will call the  
+handleMultiSelection function.  when false it calls handleSingleSelection
+- dataItem.id is passed as an argument to handleMultiSelection 
+
+
+
+5.  
+  {enableMultiSelection
+                  ? multiple.indexOf(dataItem.id) !== -1 && (
+                      <div className="content">{dataItem.answer}</div>
+                    )
+                  : selected === dataItem.id && (
+                      <div className="content">{dataItem.answer}</div>
+                    )}
+
+- enableMultiSelection is boolean state variable that determine whether the 
+multi-selection mode is enabled or not. 
+=>  If TRUE 
+  multiple.indexOf(dataItem.id) !== -1 && (
+  <div className="content">{dataItem.answer}</div>
+)
+
+multiple is an array state variable that stores the IDs of all currently 
+selected accordion items. 
+
+multiple.indexOf(dataItem.id) !== -1 :  It checks  if dataItem.id is present 
+in the mutiple array. 
+(!== -1) means dataItem is found in the  array.  
+
+&& (LOGICAL AND)  (<div className="content">{dataItem.answer}</div> ): With  the 
+logical and means is rendered only if the condition on the left is true .. 
+
+=> IF FALSE 
+    selected === dataItem.id && (
+                      <div className="content">{dataItem.answer}</div>
+                    ) 
+  
+
+- selected === dataItem.id:  
+selected is a state variable that stores the ID of the currently selected 
+accordion item . 
+check if the dataItem is equal to the currently selected itemID.  
+&& (LOGICAL AND) operator ensures <div content /> is rendered  only if the  
+condition on the left is True. 
+
+
+  DAPP ULTIMATE LEARNING METHOD
+
+LEARN(overview, crash course, full course video, docs) -> 
+TRY(build similar exisiting project, join community project)  -> 
+TEST(take interviews,examinations, certifications) -> 
+CREATE(solve new problem, generate new problems)  ->
+EARN(freelance, look for job, create jobs) 
+

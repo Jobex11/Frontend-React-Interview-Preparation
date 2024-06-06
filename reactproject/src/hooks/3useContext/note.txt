@@ -1,0 +1,135 @@
+The `useContext` hook in React allows you to consume context in functional components. Context provides a way to pass data through the component tree without having to pass props down manually at every level. This is particularly useful for global data like themes, user authentication, or settings.
+
+### Basic Usage of `useContext`
+
+To use context in a functional component, you follow these steps:
+
+1. **Create a Context**: Use `React.createContext` to create a context.
+2. **Provide the Context**: Use the `Provider` component to make the context available to child components.
+3. **Consume the Context**: Use the `useContext` hook to consume the context in functional components.
+
+### Example: Theme Context
+
+Let's create an example where we use a context to manage a theme (light or dark) in a React application.
+
+#### Step 1: Create the Context
+
+Create a new file `src/ThemeContext.js`:
+
+```javascript
+import React, { createContext, useState } from 'react';
+
+const ThemeContext = createContext();
+
+const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState('light');
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+export { ThemeProvider, ThemeContext };
+```
+
+In this file:
+- We create a `ThemeContext` using `createContext`.
+- We create a `ThemeProvider` component that uses `useState` to manage the theme state and provides the theme and a `toggleTheme` function via the context.
+
+#### Step 2: Provide the Context
+
+Wrap your application with the `ThemeProvider` in `src/index.js`:
+
+```javascript
+// src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import { ThemeProvider } from './ThemeContext';
+
+ReactDOM.render(
+  <ThemeProvider>
+    <App />
+  </ThemeProvider>,
+  document.getElementById('root')
+);
+```
+
+#### Step 3: Consume the Context
+
+Use the `useContext` hook to consume the context in any component. For example, let's create a `ThemedButton` component that changes its appearance based on the current theme:
+
+```javascript
+// src/ThemedButton.js
+import React, { useContext } from 'react';
+import { ThemeContext } from './ThemeContext';
+
+const ThemedButton = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext);
+
+  return (
+    <button
+      onClick={toggleTheme}
+      style={{
+        background: theme === 'light' ? '#fff' : '#333',
+        color: theme === 'light' ? '#000' : '#fff',
+        padding: '10px 20px',
+        border: 'none',
+        cursor: 'pointer',
+      }}
+    >
+      Toggle Theme
+    </button>
+  );
+};
+
+export default ThemedButton;
+```
+
+In this component:
+- We use `useContext` to consume the `ThemeContext`.
+- We access the `theme` and `toggleTheme` values from the context.
+- The button's styles change based on the current theme, and clicking the button toggles the theme.
+
+#### Step 4: Use the ThemedButton in App
+
+Modify `src/App.js` to include the `ThemedButton` component:
+
+```javascript
+// src/App.js
+import React from 'react';
+import ThemedButton from './ThemedButton';
+
+const App = () => (
+  <div>
+    <h1>React useContext Example</h1>
+    <ThemedButton />
+  </div>
+);
+
+export default App;
+```
+
+### Running the Application
+
+Start the React development server:
+```bash
+npm start
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the themed button and try toggling the theme.
+
+### Summary
+
+- **Context Creation**: Use `React.createContext` to create a context.
+- **Providing Context**: Use the `Provider` component to make the context available to child components.
+- **Consuming Context**: Use the `useContext` hook to access the context in functional components.
+- **Theme Example**: We demonstrated a theme toggling application where the theme state is managed using context, making it accessible throughout the component tree without prop drilling.
+
+The `useContext` hook is a powerful tool for managing global state in React applications, allowing for clean and efficient state management.

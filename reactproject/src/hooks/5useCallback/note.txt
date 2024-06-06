@@ -1,0 +1,60 @@
+`useCallback` is a React hook used to memoize functions, especially useful for optimizing performance in React components. It's commonly used when passing callbacks to child components to prevent unnecessary re-renders caused by creating new function instances on each render. Here's how it works and when to use it:
+
+### Syntax
+
+```javascript
+const memoizedCallback = useCallback(
+  () => {
+    // Callback logic
+  },
+  [dependencies]
+);
+```
+
+- The first argument is the callback function that you want to memoize.
+- The second argument is an array of dependencies. If any of these dependencies change, the callback is re-created.
+
+### Example
+
+Let's say we have a component that renders a button with a callback function passed as a prop:
+
+```javascript
+import React, { useCallback, useState } from 'react';
+
+function Button({ onClick }) {
+  console.log('Button rendered');
+  return <button onClick={onClick}>Click Me</button>;
+}
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = useCallback(() => {
+    setCount(count + 1);
+  }, [count]);
+
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <Button onClick={handleClick} />
+    </div>
+  );
+}
+
+export default App;
+```
+
+In this example:
+- We use `useCallback` to memoize the `handleClick` function.
+- The `handleClick` function increments the count state by 1.
+- We pass `handleClick` as a prop to the `Button` component.
+
+### When to Use `useCallback`
+
+1. **Optimizing Performance**: When passing callbacks to child components, especially when the callback depends on props or state, `useCallback` can prevent unnecessary re-renders by memoizing the callback.
+
+2. **Avoiding Unnecessary Function Re-Creation**: If a callback function is created inside a component and depends on variables defined in that component, using `useCallback` with the appropriate dependencies can avoid recreating the function on each render.
+
+3. **Passing Callbacks to Memoized Child Components**: When passing callbacks to memoized child components (e.g., components wrapped with `React.memo`), `useCallback` ensures that the callback reference doesn't change unless its dependencies change.
+
+However, it's important to note that using `useCallback` for every callback isn't always necessary. Use it when you notice performance issues or unnecessary re-renders caused by callback functions.

@@ -1,0 +1,75 @@
+Hooks in React are special functions that let you use state and other React features in functional components. Introduced in React 16.8, hooks provide a way to add functionality to functional components without converting them to class components. Here are some of the most commonly used hooks:
+
+1. useState: Allows you to add state to functional components.
+   
+
+   const [count, setCount] = useState(0);
+   
+
+2. useEffect: Allows you to perform side effects in functional components, such as fetching data, directly in the component.
+   
+
+   useEffect(() => {
+     document.title = `You clicked ${count} times`;
+   }, [count]);
+   
+
+3. useContext: Allows you to access the context value directly in a functional component.
+   
+
+   const value = useContext(MyContext);
+   
+
+4. useReducer: A more advanced alternative to `useState` for managing complex state logic.
+   
+
+   const [state, dispatch] = useReducer(reducer, initialState);
+   
+
+5. useCallback: Returns a memoized callback function, which can help prevent unnecessary re-renders.
+   
+
+   const memoizedCallback = useCallback(() => {
+     doSomething(a, b);
+   }, [a, b]);
+   
+
+6. useMemo: Returns a memoized value, useful for optimizing expensive calculations.
+   
+
+   const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+   
+
+7. useRef: Returns a mutable ref object whose `.current` property is initialized to the passed argument. Can be used to access DOM elements directly.
+   
+
+   const inputEl = useRef(null);
+   
+
+8. useImperativeHandle: Customizes the instance value that is exposed when using `ref` in parent components.
+   
+
+   useImperativeHandle(ref, () => ({
+     focus: () => {
+       inputRef.current.focus();
+     }
+   }));
+
+
+9. useLayoutEffect: Similar to `useEffect`, but it fires synchronously after all DOM mutations.
+   
+
+   useLayoutEffect(() => {
+     // Read layout from the DOM
+   }, [dependencies]);
+   
+
+10. useDebugValue: Can be used to display a label for custom hooks in React DevTools.
+    
+
+    useDebugValue(isOnline ? 'Online' : 'Offline');
+    
+
+Hooks simplify the process of writing React components 
+and help manage state and side effects in a cleaner, 
+more concise way.

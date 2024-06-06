@@ -1,0 +1,8 @@
+QRCODE GENERATOR 
+
+TIME 2:01:26 -  2:08:46
+
+
+
+NPM INSTALLAION 
+- npm i react-qr-code

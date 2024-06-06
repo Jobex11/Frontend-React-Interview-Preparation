@@ -1,0 +1,62 @@
+`useMemo` is a React hook used for memoizing expensive computations so that they are only re-executed when necessary. It's particularly useful for optimizing performance by caching the result of a function and only recomputing it if its dependencies change. Here's how `useMemo` works and when to use it:
+
+### Syntax
+
+```javascript
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+- The first argument is a function that computes the value you want to memoize.
+- The second argument is an array of dependencies. If any of these dependencies change, the memoized value is recomputed.
+
+### Example
+
+Let's say we have a component that calculates the factorial of a number:
+
+```javascript
+import React, { useState, useMemo } from 'react';
+
+function FactorialCalculator({ number }) {
+  const factorial = useMemo(() => {
+    console.log('Calculating factorial...');
+    let result = 1;
+    for (let i = 1; i <= number; i++) {
+      result *= i;
+    }
+    return result;
+  }, [number]);
+
+  return <div>{`Factorial of ${number} is ${factorial}`}</div>;
+}
+
+function App() {
+  const [value, setValue] = useState(5);
+
+  const handleChange = (e) => {
+    setValue(Number(e.target.value));
+  };
+
+  return (
+    <div>
+      <input type="number" value={value} onChange={handleChange} />
+      <FactorialCalculator number={value} />
+    </div>
+  );
+}
+
+export default App;
+```
+
+In this example:
+- We use `useMemo` to memoize the calculation of the factorial based on the input number.
+- The factorial calculation is only re-executed when the `number` prop changes.
+
+### When to Use `useMemo`
+
+1. **Optimizing Performance**: Use `useMemo` to avoid unnecessary recomputation of values, especially when the computation is expensive and the result doesn't change frequently.
+
+2. **Memoizing Complex Computations**: If a component depends on a value that requires a complex computation (e.g., data transformations, expensive calculations), `useMemo` can cache the result and improve performance.
+
+3. **Avoiding Unnecessary Re-Rendering**: When a component's rendering depends on a value that doesn't change often, using `useMemo` with the appropriate dependencies ensures that the computation is only done when necessary.
+
+However, remember that premature optimization can make code harder to understand. Use `useMemo` when you observe performance issues or when you know that a computation is expensive and can benefit from memoization.

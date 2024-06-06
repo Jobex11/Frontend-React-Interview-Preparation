@@ -1,0 +1,19 @@
+  ====  RANDOM COLOR GENERATOR ===
+
+TIME:      - 44:48
+
+ ANALYSIS  
+
+1
+const [typeOfColor, setTypeOfColor] = useState("hex");
+const [color, setColor] = useState("#000000");
+
+- typeOfColor determines the type of color format (hex or rgb) 
+- color  stores the current color value. 
+
+
+2. 
+function randomColorUtility(length) {
+  return Math.floor(Math.random() * length);
+}
+

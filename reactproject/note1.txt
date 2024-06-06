@@ -1,0 +1,9 @@
+25 REACT PROJECT
+time ==> 30:49
+
+1. ACCORDION
+-single accordion 
+-multiple accordion
+time 5:00 - 30:45 
+
+2. RANDOM COLOR GENERATOR

@@ -1,0 +1,143 @@
+The `useEffect` hook in React is used to perform side effects in functional components. Side effects are operations that affect something outside the scope of the function being executed, such as data fetching, subscriptions, timers, or manually changing the DOM. `useEffect` helps you manage these side effects in a clean and predictable way.
+
+### Basic Syntax
+
+```javascript
+useEffect(() => {
+  // Code to run on component mount/update
+  return () => {
+    // Optional cleanup code
+  };
+}, [dependencies]);
+```
+
+- The first argument to `useEffect` is a function that contains the side effect code.
+- The second argument is an optional array of dependencies. The effect will re-run whenever one of these dependencies changes. If the array is empty, the effect runs only once after the initial render.
+- The function can return a cleanup function to clean up the side effects before the component unmounts or before the effect re-runs.
+
+### Examples
+
+#### 1. Fetching Data from an API
+
+Here's an example of using `useEffect` to fetch data from an API when the component mounts:
+
+```javascript
+// src/App.js
+import React, { useState, useEffect } from 'react';
+
+const App = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/posts')
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      });
+  }, []); // Empty dependency array, runs once on mount
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <h1>Data from API</h1>
+      <ul>
+        {data.map((item) => (
+          <li key={item.id}>{item.title}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default App;
+```
+
+In this example:
+- The `useEffect` hook fetches data from the API when the component mounts.
+- The empty dependency array (`[]`) ensures that the effect runs only once.
+- The component displays a loading message until the data is fetched.
+
+#### 2. Setting Up and Cleaning Up a Timer
+
+Here's an example of using `useEffect` to set up and clean up a timer:
+
+```javascript
+// src/Timer.js
+import React, { useState, useEffect } from 'react';
+
+const Timer = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCount((prevCount) => prevCount + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    }; // Cleanup function to clear the interval
+  }, []); // Empty dependency array, runs once on mount
+
+  return (
+    <div>
+      <h1>Timer: {count}s</h1>
+    </div>
+  );
+};
+
+export default Timer;
+```
+
+In this example:
+- The `useEffect` hook sets up a timer using `setInterval` when the component mounts.
+- The cleanup function (`clearInterval`) ensures that the timer is cleared when the component unmounts.
+
+#### 3. Watching for Prop or State Changes
+
+Here's an example of using `useEffect` to perform an action whenever a prop or state value changes:
+
+```javascript
+// src/CountDisplay.js
+import React, { useState, useEffect } from 'react';
+
+const CountDisplay = ({ count }) => {
+  useEffect(() => {
+    console.log(`Count has changed to ${count}`);
+  }, [count]); // Dependency array, runs whenever count changes
+
+  return <div>Count: {count}</div>;
+};
+
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <CountDisplay count={count} />
+    </div>
+  );
+};
+
+export default App;
+```
+
+In this example:
+- The `useEffect` hook in the `CountDisplay` component logs a message whenever the `count` prop changes.
+- The dependency array `[count]` ensures that the effect runs only when `count` changes.
+
+### Summary
+
+- `useEffect` is a powerful hook for managing side effects in functional components.
+- It can be used for various side effects such as data fetching, subscriptions, timers, and manual DOM manipulations.
+- The dependency array controls when the effect runs, making it easy to manage updates and cleanup.
+- Cleanup functions ensure that side effects are properly cleaned up, preventing memory leaks and other issues.
